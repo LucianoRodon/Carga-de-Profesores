@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es-ar">
+
+<head>
+    <meta charset="utf-8">
+    <title>Generador de Exámenes</title>
+    <link rel="stylesheet" href="html1.css">
+
+    <style>
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            margin-left: 10px; 
+        }
+    </style>
+</head>
+
+<body>
+
+    <form method="post" action="TipoPregunta.php">
+        <h1>Generador de Exámenes</h1>
+
+        <h3>Por favor, complete los campos para generar el examen:</h3>
+
+        <label for="Materia">
+            <h2>Materia</h2>
+        </label>
+
+        <select id="Materia" name="Materia" required>
+            <option value="" disabled selected style="display: none;">Seleccione una materia...</option>
+            <option value="Programacion I">Programación I</option>
+            <option value="Estadistica">Estadística</option>
+            <option value="Ing del Software">Ing. de Software</option>
+            <option value="UDI">U.D.I.</option>
+            <option value="Base De Datos">Base De Datos</option>
+            <option value="Ingles Tecnico">Inglés Técnico</option>
+            <option value="Desarrollo Emprendedor">Innovación de Desarrollo Emprendedor</option>
+        </select>
+        <br>
+
+        <label for="Curso">
+            <h2>Curso y Comision</h2>
+        </label>
+
+        <select name="Curso" id="Curso">
+            <option value="" disabled selected style="display: none;">Seleccione el curso...</option>
+            <option value="1°1°">1°1°</option>
+            <option value="1°2°">1°2°</option>
+            <option value="1°3°">1°3°</option>
+            <hr>
+            <option value="2°1°">2°1°</option>
+            <option value="2°2°">2°2°</option>
+            <option value="2°3°">2°3°</option>
+            <hr>
+            <option value="3°1°">3°1°</option>
+            <option value="3°2°">3°2°</option>
+        </select>
+
+
+        <label for="fechaInicio">
+            <h2>Fecha y hora de comienzo:</h2>
+        </label>
+        <input type="datetime-local" id="fechaInicio" name="fechaInicio" min="2020-01-01T00:00" required>
+        <br>
+
+        <label for="duracionTotal">
+            <h2>Tiempo total de duración (minutos):</h2>
+        </label>
+        <input type="number" id="duracionTotal" name="duracionTotal" min="0" required>
+
+
+        <div class="checkbox-container">
+            <label for="ordenAleatorio">
+                <h2>Orden de preguntas aleatorio:</h2>
+            </label>
+            <input type="checkbox" id="ordenAleatorio" name="ordenAleatorio">
+        </div>
+
+
+        <div class="checkbox-container">
+            <label for="devuelveNotaAutomatica">
+                <h2>Devolver nota automaticamente:</h2>
+            </label>
+            <input type="checkbox" id="devuelveNotaAutomatica" name="devuelveNotaAutomatica">
+        </div>
+
+
+        <div class="checkbox-container">
+            <label for="devuelveRespuestasAutomaticamente">
+                <h2>Devolver respuestas automaticamente:</h2>
+            </label>
+            <input type="checkbox" id="devuelveRespuestasAutomaticamente" name="devuelveRespuestasAutomaticamente">
+        </div>
+
+        <button type="submit">Continuar</button>
+    </form>
+
+
+</body>
+
+</html>
