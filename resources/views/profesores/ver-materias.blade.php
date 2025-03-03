@@ -28,6 +28,7 @@
                                 <th>Grado</th>
                                 <th>División</th>
                                 <th>Materia</th>
+                                <th>Hora Semanal</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
@@ -38,6 +39,7 @@
                                     <td>{{ $materia->grado->grado }}</td>
                                     <td>{{ $materia->grado->division }}</td>
                                     <td>{{ $materia->unidadCurricular->unidad_curricular }}</td>
+                                    <td>{{ $materia->unidadCurricular->horas_sem }}</td>
                                     <td>
                                         <form action="{{ route('profesores.eliminar-materia', $materia->id) }}" method="POST"
                                             class="d-inline">
