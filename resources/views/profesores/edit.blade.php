@@ -126,16 +126,22 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Disponibilidad Horaria</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-clock"></i></span>
-                                    <input type="number" name="disponibilidad_horaria" 
-                                           class="form-control @error('disponibilidad_horaria') is-invalid @enderror" 
-                                           value="{{ old('disponibilidad_horaria', $profesor->disponibilidad_horaria) }}">
-                                    @error('disponibilidad_horaria')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                            <label class="form-label">Disponibilidad Horaria 
+                                <i class="fas fa-exclamation-circle" 
+                                data-bs-toggle="tooltip" 
+                                data-bs-placement="top" 
+                                title="Recuerde: 1 hora cátedra equivale a 40 minutos" 
+                                style="color: gray;"></i>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                <input type="number" name="disponibilidad_horaria" 
+                                    class="form-control @error('disponibilidad_horaria') is-invalid @enderror" 
+                                    value="{{ old('disponibilidad_horaria', $profesor->disponibilidad_horaria) }}">
+                                @error('disponibilidad_horaria')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                             </div>
                         </div>
 

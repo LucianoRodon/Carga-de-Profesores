@@ -31,6 +31,11 @@ class ProfesorController extends Controller
         return view('profesores.index', compact('profesores'));
     }
 
+    public function todasMaterias()
+    {
+        return view('profesores.todas-materias');
+    }
+
 
 
     public function show(Profesor $profesor)
@@ -72,7 +77,7 @@ class ProfesorController extends Controller
             'estudios' => 'required|nullable|string|max:500',
             'experiencia' => 'required|nullable|string|max:500',
             'profesion' => 'required|string|max:100',
-            'disponibilidad_horaria' => 'required|nullable|integer|min:1|max:60',
+            'disponibilidad_horaria' => 'required|nullable|integer|min:1|max:35',
             'estado' => 'required|in:Activo,Inactivo'
         ], [
             'required' => 'Este campo es obligatorio.',
@@ -137,7 +142,7 @@ class ProfesorController extends Controller
             'id_localidad' => 'nullable|exists:localidades,id_localidad',
             'experiencia' => 'nullable|string|max:500',
             'profesion' => 'required|string|max:100',
-            'disponibilidad_horaria' => 'nullable|integer|min:1|max:60',
+            'disponibilidad_horaria' => 'nullable|integer|min:1|max:35',
             'estado' => 'required|in:Activo,Inactivo'
         ], [ // Mensajes personalizados
             'required' => 'Este campo es obligatorio.',

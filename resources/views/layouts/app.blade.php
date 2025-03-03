@@ -58,8 +58,8 @@
                 <ul class="navbar-nav">
 
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="{{ route('profesores.index') }}">
-                            <i class="fas fa-users"></i> Profesores
+                        <a class="nav-link text-light" href="{{ route('profesores.todas-materias') }}">
+                            <i class="fas fa-users"></i> Materias Sin Profesor
                         </a>
                     </li>
                     

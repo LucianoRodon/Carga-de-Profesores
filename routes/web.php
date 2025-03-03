@@ -22,17 +22,23 @@ Route::group(['prefix' => 'profesores'], function () {
     // Rutas para asignación de materias
     Route::get('/{profesorId}/asignar-materias', [ProfesorMateriaController::class, 'asignarMaterias'])
         ->name('profesores.asignar-materias');
-    
+
     Route::post('/{profesorId}/store-materias', [ProfesorMateriaController::class, 'storeMaterias'])
         ->name('profesores.store-materias');
-    
+
     Route::get('/{profesorId}/ver-materias', [ProfesorMateriaController::class, 'verMaterias'])
         ->name('profesores.ver-materias');
-    
+
     Route::delete('/eliminar-materia/{id}', [ProfesorMateriaController::class, 'eliminarMateria'])
         ->name('profesores.eliminar-materia');
+
+    Route::get('/profesores/materias', [ProfesorController::class, 'todasMaterias'])->name('profesores.todas-materias');
+
+
 });
 
 // Nueva ruta agregada para obtener unidades curriculares filtradas por carrera y grado
 Route::get('/unidades-curriculares/{carrera}/{grado}', [UnidadCurricularController::class, 'obtenerUnidadesCurriculares'])
     ->name('unidades-curriculares.obtener');
+
+
