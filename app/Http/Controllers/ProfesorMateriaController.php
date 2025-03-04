@@ -19,9 +19,9 @@ class ProfesorMateriaController extends Controller
         $unidadesCurriculares = UnidadCurricular::all();
 
         return view('profesores.asignar-materias', compact(
-            'profesor', 
-            'carreras', 
-            'grados', 
+            'profesor',
+            'carreras',
+            'grados',
             'unidadesCurriculares'
         ));
     }
@@ -35,7 +35,19 @@ class ProfesorMateriaController extends Controller
             'unidad_curricular' => 'required|exists:unidad_curricular,id_uc',
         ]);
 
-        // Verificar si ya existe la asignación
+        // Verificar si la unidad curricular ya está asignada a otro profesor
+        if (
+            ProfesorUnidadCurricular::estaAsignadaAOtroProfesor(
+                $request->carrera,
+                $request->grado,
+                $request->unidad_curricular,
+                $profesorId
+            )
+        ) {
+            return back()->with('error', 'Esta materia ya está asignada a otro profesor.');
+        }
+
+        // Verificar si ya existe la asignación para este profesor
         $existente = ProfesorUnidadCurricular::where([
             'profesor_id' => $profesorId,
             'id_carrera' => $request->carrera,
@@ -44,7 +56,7 @@ class ProfesorMateriaController extends Controller
         ])->exists();
 
         if ($existente) {
-            return back()->with('error', 'Esta materia ya está asignada al profesor.');
+            return back()->with('error', 'Esta materia ya está asignada a este profesor.');
         }
 
         // Crear nueva asignación
@@ -57,7 +69,31 @@ class ProfesorMateriaController extends Controller
 
         return back()->with('success', 'Materia asignada correctamente.');
     }
-    
+
+    public function obtenerUnidadesCurriculares($carreraId, $gradoId)
+    {
+        // Obtener todas las unidades curriculares para la carrera y grado
+        $unidadesCurriculares = UnidadCurricular::whereHas('carreras', function ($query) use ($carreraId) {
+            $query->where('carreras.id_carrera', $carreraId);
+        })->whereHas('grados', function ($query) use ($gradoId) {
+            $query->where('grados.id_grado', $gradoId);
+        })->get();
+
+        // Obtener las materias ya asignadas a cualquier profesor para este grado y carrera
+        $materiasAsignadas = ProfesorUnidadCurricular::where([
+            'id_carrera' => $carreraId,
+            'id_grado' => $gradoId
+        ])->pluck('id_uc');
+
+        // Filtrar unidades curriculares excluyendo las asignadas
+        $unidadesDisponibles = $unidadesCurriculares->filter(function ($unidad) use ($materiasAsignadas) {
+            return !$materiasAsignadas->contains($unidad->id_uc);
+        });
+
+        return response()->json($unidadesDisponibles->values());
+    }
+
+
 
     // Ver materias asignadas
     public function verMaterias($profesorId)
@@ -73,9 +109,13 @@ class ProfesorMateriaController extends Controller
     // Eliminar asignación de materia
     public function eliminarMateria($id)
     {
-        $asignacion = ProfesorUnidadCurricular::findOrFail($id);
-        $asignacion->delete();
+        $asignacion = ProfesorUnidadCurricular::withTrashed()->findOrFail($id);
+
+        // Forzar eliminación completa (hard delete)
+        $asignacion->forceDelete();
 
         return back()->with('success', 'Materia eliminada correctamente.');
     }
+
+
 }

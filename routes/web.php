@@ -38,7 +38,9 @@ Route::group(['prefix' => 'profesores'], function () {
 });
 
 // Nueva ruta agregada para obtener unidades curriculares filtradas por carrera y grado
-Route::get('/unidades-curriculares/{carrera}/{grado}', [UnidadCurricularController::class, 'obtenerUnidadesCurriculares'])
+// En routes/web.php
+Route::get('/unidades-curriculares/{carrera}/{grado}', [ProfesorMateriaController::class, 'obtenerUnidadesCurriculares'])
     ->name('unidades-curriculares.obtener');
+
 
 
