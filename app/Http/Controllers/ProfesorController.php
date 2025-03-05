@@ -173,38 +173,19 @@ class ProfesorController extends Controller
         // Obtener las asignaciones antes de eliminar
         $asignaciones = ProfesorUnidadCurricular::where('profesor_id', $profesor->id)->get();
 
-        // Preparar un mensaje detallado
-        $detallesAsignaciones = $asignaciones->map(function ($asignacion) {
-            return [
-                'carrera' => optional($asignacion->carrera)->carrera ?? 'N/A',
-                'grado' => optional($asignacion->grado)->grado ?? 'N/A',
-                'unidad_curricular' => optional($asignacion->unidadCurricular)->unidad_curricular ?? 'N/A'
-            ];
-        });
-
-        // Contar asignaciones
-        $cantidadAsignaciones = $asignaciones->count();
-
-        // Eliminar el profesor (esto eliminará automáticamente las asignaciones)
-        $profesor->delete();
-
         // Preparar mensaje de confirmación
         $mensaje = "Profesor eliminado correctamente. ";
 
-        if ($cantidadAsignaciones > 0) {
-            $mensaje .= "Se eliminaron {$cantidadAsignaciones} asignaciones de materias:\n";
-
-            // Agregar detalles de las asignaciones
-            foreach ($detallesAsignaciones as $detalle) {
-                $mensaje .= "- Carrera: {$detalle['carrera']}, Grado: {$detalle['grado']}, Materia: {$detalle['unidad_curricular']}\n";
-            }
+        if ($asignaciones->count() > 0) {
+            $mensaje .= "Se eliminaron {$asignaciones->count()} asignaciones de materias.";
         }
+
+        // Eliminar el profesor (eliminará automáticamente las asignaciones)
+        $profesor->delete();
 
         return redirect()->route('profesores.index')
             ->with('warning', $mensaje);
     }
-
-
 
 
     public function create()

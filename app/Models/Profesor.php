@@ -33,12 +33,14 @@ class Profesor extends Model
     }
 
     // Reescribir método de eliminación para resetear IDs
-    public static function boot()
+    protected static function boot()
     {
         parent::boot();
 
-        static::deleted(function ($model) {
-            self::resetAutoIncrement();
+        // Eliminar las asignaciones de materias cuando se elimina un profesor
+        static::deleting(function ($profesor) {
+            // Elimina todas las asignaciones de unidades curriculares para este profesor
+            ProfesorUnidadCurricular::where('profesor_id', $profesor->id)->delete();
         });
     }
 
