@@ -27,6 +27,12 @@ class Profesor extends Model
         'id_localidad'
     ];
 
+    public function asignaciones()
+{
+    return $this->hasMany(ProfesorUnidadCurricular::class, 'profesor_id');
+}
+
+
     public function localidad()
     {
         return $this->belongsTo(Localidad::class, 'id_localidad', 'id_localidad');

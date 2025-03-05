@@ -99,7 +99,10 @@
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <form action="{{ route('profesores.destroy', $profesor) }}" method="POST"
-                                                        class="d-inline delete-form">
+                                                        class="d-inline delete-form"
+                                                        data-asignaciones="{{ $profesor->asignaciones->map(function($asignacion) {
+                                                            return $asignacion->unidadCurricular->unidad_curricular;
+                                                        })->implode(', ') }}">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger btn-sm delete-btn"
@@ -107,6 +110,7 @@
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -137,28 +141,25 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        @if(session('warning'))
-            Swal.fire({
-                title: 'Profesor Eliminado',
-                html: `{!! nl2br(e(session('warning'))) !!}`,
-                icon: 'warning',
-                confirmButtonText: 'Entendido'
-            });
-        @endif
-
         const deleteForms = document.querySelectorAll('.delete-form');
-        
+
         deleteForms.forEach(form => {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
+                let asignaciones = form.getAttribute('data-asignaciones');
+                let asignacionesHtml = asignaciones 
+                    ? `<ul class="list-group mb-3">${asignaciones.split(', ').map(a => `<li class="list-group-item">${a}</li>`).join('')}</ul>` 
+                    : `<p class="text-muted">No hay asignaciones.</p>`;
+
                 Swal.fire({
                     title: 'Eliminar Profesor',
                     html: `
                         <div class="alert alert-warning" role="alert">
                             <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
-                            <strong>Atención:</strong> Se eliminarán todas las asignaciones de materias del profesor.
+                            <strong>Atención:</strong> Se eliminarán las siguientes asignaciones de materias del profesor.
                         </div>
+                        ${asignacionesHtml}
                         ¿Estás seguro de que deseas continuar?
                     `,
                     icon: 'warning',
@@ -176,4 +177,5 @@
         });
     });
 </script>
+
 @endpush
