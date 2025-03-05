@@ -109,13 +109,16 @@ class ProfesorMateriaController extends Controller
     // Eliminar asignación de materia
     public function eliminarMateria($id)
     {
-        $asignacion = ProfesorUnidadCurricular::withTrashed()->findOrFail($id);
+        $asignacion = ProfesorUnidadCurricular::findOrFail($id);
 
-        // Forzar eliminación completa (hard delete)
-        $asignacion->forceDelete();
+        $unidadCurricular = $asignacion->unidadCurricular->unidad_curricular;
 
-        return back()->with('success', 'Materia eliminada correctamente.');
+        $asignacion->delete();
+
+        return redirect()->back()
+            ->with('success', "La materia {$unidadCurricular} ha sido eliminada correctamente.");
     }
+
 
 
 }

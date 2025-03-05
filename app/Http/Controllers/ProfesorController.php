@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\ProfesorUnidadCurricular;
 use App\Models\Profesor;
 use App\Models\Localidad;
 use Illuminate\Http\Request;
@@ -125,7 +126,7 @@ class ProfesorController extends Controller
             'nombre' => 'required|string|max:50',
             'apellido' => 'required|string|max:50',
             'email' => 'required|email|unique:profesores,email,' . $profesor->id,
-            'telefono' => 'required|numeric|digits_between:8,10',
+            'telefono' => 'required|numeric|digits_between:8,15',
             'genero' => 'required',
             'fecha_nacimiento' => [
                 'required',
@@ -169,11 +170,42 @@ class ProfesorController extends Controller
 
     public function destroy(Profesor $profesor)
     {
+        // Obtener las asignaciones antes de eliminar
+        $asignaciones = ProfesorUnidadCurricular::where('profesor_id', $profesor->id)->get();
+
+        // Preparar un mensaje detallado
+        $detallesAsignaciones = $asignaciones->map(function ($asignacion) {
+            return [
+                'carrera' => optional($asignacion->carrera)->carrera ?? 'N/A',
+                'grado' => optional($asignacion->grado)->grado ?? 'N/A',
+                'unidad_curricular' => optional($asignacion->unidadCurricular)->unidad_curricular ?? 'N/A'
+            ];
+        });
+
+        // Contar asignaciones
+        $cantidadAsignaciones = $asignaciones->count();
+
+        // Eliminar el profesor (esto eliminará automáticamente las asignaciones)
         $profesor->delete();
 
+        // Preparar mensaje de confirmación
+        $mensaje = "Profesor eliminado correctamente. ";
+
+        if ($cantidadAsignaciones > 0) {
+            $mensaje .= "Se eliminaron {$cantidadAsignaciones} asignaciones de materias:\n";
+
+            // Agregar detalles de las asignaciones
+            foreach ($detallesAsignaciones as $detalle) {
+                $mensaje .= "- Carrera: {$detalle['carrera']}, Grado: {$detalle['grado']}, Materia: {$detalle['unidad_curricular']}\n";
+            }
+        }
+
         return redirect()->route('profesores.index')
-            ->with('success', "Profesor {$profesor->nombre} {$profesor->apellido} a sido eliminado exitosamente.");
+            ->with('warning', $mensaje);
     }
+
+
+
 
     public function create()
     {

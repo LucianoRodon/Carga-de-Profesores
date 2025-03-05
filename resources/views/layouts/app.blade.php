@@ -14,6 +14,9 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+    <!-- SweetAlert2 CSS (Opcional pero recomendado) -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+
     <style>
         body {
             background-color: rgb(252, 253, 255);
@@ -33,6 +36,9 @@
             background-color: rgba(0, 0, 0, 0.075);
         }
     </style>
+
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body>
@@ -48,7 +54,6 @@
                 <span class="text-light">Gestión de Profesores</span>
             </a>
 
-
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -56,17 +61,15 @@
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-
                     <li class="nav-item">
                         <a class="nav-link text-light" href="{{ route('profesores.todas-materias') }}">
                             <i class="fas fa-users"></i> Materias Sin Profesor
                         </a>
                     </li>
-                    
 
                     <li class="nav-item">
                         <a class="nav-link text-light">
-                            <i class=" fas fa-envelope"></i> Contacto
+                            <i class="fas fa-envelope"></i> Contacto
                         </a>
                     </li>
                 </ul>
@@ -74,13 +77,54 @@
         </div>
     </nav>
 
+    <div id="app">
+        @yield('content')
+    </div>
 
-    @yield('content')
+    <!-- jQuery (Optional but recommended for some plugins) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Bootstrap 5 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    @yield('scripts')
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
+    <!-- Global Scripts -->
+    <script>
+        // Configuración global de CSRF Token para Ajax
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        // Función global para mostrar notificaciones
+        function showNotification(type, message) {
+            Swal.fire({
+                icon: type,
+                title: message,
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+
+        // Manejar mensajes flash de sesión
+        @if(session('success'))
+            showNotification('success', '{{ session('success') }}');
+        @endif
+
+        @if(session('error'))
+            showNotification('error', '{{ session('error') }}');
+        @endif
+
+        @if(session('warning'))
+            showNotification('warning', '{{ session('warning') }}');
+        @endif
+    </script>
+
+    <!-- Stacked Scripts -->
+    @stack('scripts')
 </body>
 
 </html>

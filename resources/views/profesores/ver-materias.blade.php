@@ -8,13 +8,6 @@
         </div>
 
         <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
             @if($materias->isEmpty())
                 <div class="alert alert-warning text-center shadow-sm p-3">
                     <i class="fas fa-exclamation-circle me-2"></i> No hay materias asignadas.
@@ -41,12 +34,11 @@
                                     <td>{{ $materia->unidadCurricular->unidad_curricular }}</td>
                                     <td>{{ $materia->unidadCurricular->horas_sem }}</td>
                                     <td>
-                                        <form action="{{ route('profesores.eliminar-materia', $materia->id) }}" method="POST"
-                                            class="d-inline">
+                                        <form action="{{ route('profesores.eliminar-materia', $materia->id) }}" method="POST" class="delete-form">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3"
-                                                onclick="return confirm('¿Está seguro de eliminar esta materia?')">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3 delete-btn"
+                                                data-unidad-curricular="{{ $materia->unidadCurricular->unidad_curricular }}">
                                                 <i class="fas fa-trash"></i> Eliminar
                                             </button>
                                         </form>
@@ -72,3 +64,41 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteForms = document.querySelectorAll('.delete-form');
+        
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const deleteBtn = form.querySelector('.delete-btn');
+                const unidadCurricular = deleteBtn.dataset.unidadCurricular;
+                
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    html: `
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
+                            <strong>Atención:</strong> Eliminaras la Unidad Curricular
+                        </div>
+                        <p class="fw-bold">${unidadCurricular}</p>
+                    `,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+@endpush
