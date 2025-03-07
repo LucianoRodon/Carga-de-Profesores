@@ -169,20 +169,30 @@ class ProfesorController extends Controller
     }
 
     public function destroy(Profesor $profesor)
-{
-    $asignaciones = $profesor->asignaciones;
+    {
+        // Obtener todas las asignaciones del profesor
+        $asignaciones = $profesor->asignaciones;
 
-    $mensaje = "Profesor eliminado correctamente.";
+        if ($asignaciones->count() > 0) {
+            // Eliminar todas las asignaciones del profesor
+            foreach ($asignaciones as $asignacion) {
+                $asignacion->forceDelete(); // Borra completamente la asignación
+            }
+        }
 
-    if ($asignaciones->count() > 0) {
-        $mensaje .= " Se eliminaron {$asignaciones->count()} asignaciones de materias.";
+        // Mensaje de confirmación
+        $mensaje = "Profesor eliminado correctamente.";
+
+        if ($asignaciones->count() > 0) {
+            $mensaje .= " Se eliminaron {$asignaciones->count()} asignaciones de materias.";
+        }
+
+        // Eliminar el profesor
+        $profesor->delete();
+
+        return redirect()->route('profesores.index')->with('warning', $mensaje);
     }
 
-    // Eliminar el profesor y sus asignaciones
-    $profesor->delete();
-
-    return redirect()->route('profesores.index')->with('warning', $mensaje);
-}
 
 
 
