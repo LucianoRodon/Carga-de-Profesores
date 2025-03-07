@@ -43,4 +43,6 @@ Route::get('/unidades-curriculares/{carrera}/{grado}', [ProfesorMateriaControlle
     ->name('unidades-curriculares.obtener');
 
 
+Route::get('/materias-sin-profesor', [UnidadCurricularController::class, 'index'])->name('profesores.todas-materias');
+Route::get('/api/materias-sin-profesor', [UnidadCurricularController::class, 'materiasSinProfesor'])->name('materias.sin.profesor');
 
