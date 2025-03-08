@@ -100,7 +100,6 @@ class ProfesorController extends Controller
             'id_localidad' => 'required|nullable|exists:localidades,id_localidad',
             'estudios' => 'required|nullable|string|max:500',
             'experiencia' => 'required|nullable|string|max:500',
-            'profesion' => 'required|string|max:100',
             'disponibilidad_horaria' => 'required|nullable|integer|min:1|max:35',
         ], [
             'required' => 'Este campo es obligatorio.',
@@ -164,7 +163,7 @@ class ProfesorController extends Controller
             'estudios' => 'nullable|string|max:500',
             'id_localidad' => 'nullable|exists:localidades,id_localidad',
             'experiencia' => 'nullable|string|max:500',
-            'profesion' => 'required|string|max:100',
+
             'disponibilidad_horaria' => 'nullable|integer|min:1|max:35',
         ], [ // Mensajes personalizados
             'required' => 'Este campo es obligatorio.',

@@ -193,21 +193,8 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-md-6">
-                                    <label class="fw-bold">Profesión</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="fas fa-cogs"></i></span>
-                                        <input type="text"
-                                            class="form-control shadow-sm @error('profesion') is-invalid @enderror"
-                                            name="profesion" value="{{ old('profesion') }}">
-                                    </div>
-                                    @error('profesion')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
 
-                            <div class="row g-3 mt-2">
+
                                 <div class="col-md-6">
                                     <label class="fw-bold">Disponibilidad Horaria
                                         <i class="fas fa-exclamation-circle" data-bs-toggle="tooltip"
@@ -225,8 +212,12 @@
                                     @enderror
                                 </div>
 
-                                
+
                             </div>
+
+
+
+
 
                             <div class="row mt-4">
                                 <div class="col text-center">

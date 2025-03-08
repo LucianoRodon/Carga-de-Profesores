@@ -206,22 +206,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Profesión</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
-                                    <input type="text" name="profesion" 
-                                        class="form-control @error('profesion') is-invalid @enderror" 
-                                        value="{{ old('profesion', $profesor->profesion) }}">
-                                </div>
-                                @error('profesion')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
 
-                            
-                        </div>
 
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('profesores.index') }}" class="btn btn-secondary">
