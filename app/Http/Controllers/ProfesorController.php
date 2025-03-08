@@ -10,32 +10,55 @@ use Carbon\Carbon;
 class ProfesorController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = Profesor::query();
+{
+    $query = Profesor::query();
 
-        // Filtros de búsqueda
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('dni', 'like', "%{$search}%")
-                    ->orWhere('nombre', 'like', "%{$search}%")
-                    ->orWhere('apellido', 'like', "%{$search}%");
-            });
-        }
-
-        // Filtro de estado
-        if ($request->filled('estado')) {
-            $query->where('estado', $request->input('estado'));
-        }
-
-        $profesores = $query->paginate(10);
-        return view('profesores.index', compact('profesores'));
+    // Filtros de búsqueda
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function ($q) use ($search) {
+            $q->where('dni', 'like', "%{$search}%")
+                ->orWhere('nombre', 'like', "%{$search}%")
+                ->orWhere('apellido', 'like', "%{$search}%");
+        });
     }
+
+    // Filtro de estado (solo muestra activos si no se especifica otro estado)
+    if ($request->filled('estado')) {
+        $query->where('estado', $request->input('estado'));
+    } else {
+        $query->where('estado', 'Activo'); // Mostrar solo activos por defecto
+    }
+
+    $profesores = $query->paginate(10);
+    return view('profesores.index', compact('profesores'));
+}
+
 
     public function todasMaterias()
     {
         return view('profesores.todas-materias');
     }
+    public function inactivos()
+    {
+        // Obtener los profesores cuyo estado sea 'Inactivo'
+        $profesoresInactivos = Profesor::where('estado', 'Inactivo')->paginate(10);
+    
+        // Devolver la vista con los profesores inactivos
+        return view('profesores.inactivos', compact('profesoresInactivos'));
+    }
+    public function activar($id)
+{
+    $profesor = Profesor::findOrFail($id);
+
+    // Cambiar el estado del profesor a 'Activo'
+    $profesor->estado = 'Activo';
+    $profesor->save();
+
+    // Redirigir con un mensaje de éxito
+    return redirect()->route('profesores.inactivos')
+        ->with('success', "El profesor {$profesor->nombre} {$profesor->apellido} ha sido activado.");
+}
 
 
 
@@ -79,7 +102,6 @@ class ProfesorController extends Controller
             'experiencia' => 'required|nullable|string|max:500',
             'profesion' => 'required|string|max:100',
             'disponibilidad_horaria' => 'required|nullable|integer|min:1|max:35',
-            'estado' => 'required|in:Activo,Inactivo'
         ], [
             'required' => 'Este campo es obligatorio.',
             'string' => 'Debe ser un texto.',
@@ -144,7 +166,6 @@ class ProfesorController extends Controller
             'experiencia' => 'nullable|string|max:500',
             'profesion' => 'required|string|max:100',
             'disponibilidad_horaria' => 'nullable|integer|min:1|max:35',
-            'estado' => 'required|in:Activo,Inactivo'
         ], [ // Mensajes personalizados
             'required' => 'Este campo es obligatorio.',
             'string' => 'Debe ser un texto.',
@@ -172,28 +193,30 @@ class ProfesorController extends Controller
     {
         // Obtener todas las asignaciones del profesor
         $asignaciones = $profesor->asignaciones;
-
+    
         if ($asignaciones->count() > 0) {
             // Eliminar todas las asignaciones del profesor
             foreach ($asignaciones as $asignacion) {
                 $asignacion->forceDelete(); // Borra completamente la asignación
             }
         }
-
-        // Mensaje de confirmación
+    
+        // Actualizar el estado del profesor a "Inactivo" en lugar de eliminarlo
+        $profesor->estado = 'Inactivo';
+        $profesor->fecha_inactivacion = now();
+        $profesor->save();
+    
+         // Mensaje de confirmación
         $mensaje = "Profesor eliminado correctamente.";
 
         if ($asignaciones->count() > 0) {
             $mensaje .= " Se eliminaron {$asignaciones->count()} asignaciones de materias.";
         }
-
-        // Eliminar el profesor
-        $profesor->delete();
-
-        return redirect()->route('profesores.index')->with('warning', $mensaje);
+    
+        // Redirigir a la vista de profesores inactivos con el mensaje
+        return redirect()->route('profesores.inactivos')->with('warning', $mensaje);
     }
-
-
+    
 
 
     public function create()

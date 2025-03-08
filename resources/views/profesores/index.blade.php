@@ -28,17 +28,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
-                                    <select name="estado" class="form-select" onchange="this.form.submit()">
-                                        <option value="">Todos los Estados</option>
-                                        <option value="Activo" {{ request('estado') == 'Activo' ? 'selected' : '' }}>
-                                            Activos
-                                        </option>
-                                        <option value="Inactivo" {{ request('estado') == 'Inactivo' ? 'selected' : '' }}>
-                                            Inactivos
-                                        </option>
-                                    </select>
-                                </div>
+                                
                             </div>
                         </form>
 
@@ -59,46 +49,37 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($profesores as $profesor)
-                                        <tr>
-
-                                            <td>{{ $profesor->dni }}</td>
-                                            <td>{{ $profesor->nombre }}</td>
-                                            <td>{{ $profesor->apellido }}</td>
-                                            <td>{{ $profesor->telefono }}</td>
-                                            <td>{{ $profesor->email }}</td>
-                                            <td>{{ $profesor->disponibilidad_horaria }} hs</td>
-                                            <td>
-                                                <span
-                                                    class="badge {{ $profesor->estado == 'Activo' ? 'bg-success' : 'bg-danger' }}">
-                                                    {{ $profesor->estado }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group" role="group">
-                                                    <a href="{{ route('profesores.asignar-materias', $profesor->id) }}"
-                                                        class="btn btn-dark btn-sm">
-                                                        <i class="fas fa-chalkboard-teacher"></i>
-                                                    </a>
-                                                    <a href="{{ route('profesores.ver-materias', $profesor->id) }}"
-                                                        class="btn btn-warning btn-sm">
-                                                        <i class="fas fa-book-open"></i>
-                                                    </a>
-                                                </div>
-
-                                            </td>
-                                            <td>
-                                                <div class="btn-group" role="group">
-                                                    <a href="{{ route('profesores.show', $profesor) }}"
-                                                        class="btn btn-info btn-sm" data-bs-toggle="tooltip"
-                                                        title="Ver Detalles">
-                                                        <i class="fas fa-eye"></i>
-                                                    </a>
-                                                    <a href="{{ route('profesores.edit', $profesor) }}"
-                                                        class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <form action="{{ route('profesores.destroy', $profesor) }}" method="POST"
+    @forelse($profesores as $profesor)
+        @if($profesor->estado === 'Activo') 
+            <tr>
+                <td>{{ $profesor->dni }}</td>
+                <td>{{ $profesor->nombre }}</td>
+                <td>{{ $profesor->apellido }}</td>
+                <td>{{ $profesor->telefono }}</td>
+                <td>{{ $profesor->email }}</td>
+                <td>{{ $profesor->disponibilidad_horaria }} hs</td>
+                <td>
+                    <span class="badge bg-success">Activo</span>
+                </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a href="{{ route('profesores.asignar-materias', $profesor->id) }}" class="btn btn-dark btn-sm">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </a>
+                        <a href="{{ route('profesores.ver-materias', $profesor->id) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-book-open"></i>
+                        </a>
+                    </div>
+                </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a href="{{ route('profesores.show', $profesor) }}" class="btn btn-info btn-sm" title="Ver Detalles">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ route('profesores.edit', $profesor) }}" class="btn btn-warning btn-sm" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="{{ route('profesores.destroy', $profesor) }}" method="POST"
                                                         class="d-inline delete-form"
                                                         data-asignaciones="{{ $profesor->asignaciones->map(function($asignacion) {
                                                             return $asignacion->unidadCurricular->unidad_curricular;
@@ -107,23 +88,24 @@
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger btn-sm delete-btn"
                                                             data-bs-toggle="tooltip" title="Eliminar">
-                                                            <i class="fas fa-trash"></i>
+                                                            <i class="fas fa-ban"></i>
                                                         </button>
                                                     </form>
+                    </div>
+                </td>
+            </tr>
+        @endif
+    @empty
+        <tr>
+            <td colspan="9" class="text-center">
+                <div class="alert alert-info">
+                    No se encontraron registros de profesores activos
+                </div>
+            </td>
+        </tr>
+    @endforelse
+</tbody>
 
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="9" class="text-center">
-                                                <div class="alert alert-info">
-                                                    No se encontraron registros de profesores
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
                             </table>
                         </div>
 

@@ -220,23 +220,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Estado</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-toggle-on"></i></span>
-                                    <select name="estado" class="form-select @error('estado') is-invalid @enderror" required>
-                                        @foreach($estados as $key => $estado)
-                                            <option value="{{ $key }}" 
-                                                {{ old('estado', $profesor->estado) == $key ? 'selected' : '' }}>
-                                                {{ $estado }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                @error('estado')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            
                         </div>
 
                         <div class="d-flex justify-content-between">

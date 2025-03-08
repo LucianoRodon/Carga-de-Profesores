@@ -34,6 +34,9 @@ Route::group(['prefix' => 'profesores'], function () {
 
     Route::get('/profesores/materias', [ProfesorController::class, 'todasMaterias'])->name('profesores.todas-materias');
 
+    Route::get('/profesores/inactivos', [ProfesorController::class, 'inactivos'])->name('profesores.inactivos');
+    
+    Route::put('/profesores/{id}/activar', [ProfesorController::class, 'activar'])->name('profesores.activar');
 
 });
 
